@@ -3,15 +3,20 @@ const mysql = require('mysql');
 const dns = require('dns');
 const { Console } = require('console');
 
+// const db_init = require('./db-initializer');
+// db_init.createDatabase();
+
 const app = express();
 const con = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "youoma0711",
-    database: "url-shortener-db"
+    database: "url_shortener_db"
   });
 
-const hostname = '127.0.0.1';
+// db_init.createTable(con);
+
+const hostname = '127.0.0.1';;
 const port = 3000;
 
 app.use(express.static('public'));
