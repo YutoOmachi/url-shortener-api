@@ -38,6 +38,7 @@ function getShortURL(req,res,cb){
 
 //When new URL is posted
 app.post('/api/shorturl/new', (req,res, next)=>{
+    //Evaluates if the given string is valid
     let host = "";
     res.locals.original = req.body.url;
     try{    
@@ -56,22 +57,18 @@ app.post('/api/shorturl/new', (req,res, next)=>{
     })
     next();
 }, (req,res)=>{
-    con.connect((err)=>{
-        if (err) throw err;
-        getShortURL(req,res,(shortVal)=>{
-            sql = "INSERT INTO urls (original, short) VALUES (? , ?)"
-            con.query(sql, [res.locals.original, shortVal], function (err, result) {
-                if (err) throw err;
-                res.send({original_url: res.locals.original, short_url: shortVal})
-            });
-        })
-
-    });
+    getShortURL(req,res,(shortVal)=>{
+        sql = "INSERT INTO urls (original, short) VALUES (? , ?)"
+        con.query(sql, [res.locals.original, shortVal], function (err, result) {
+            if (err) throw err;
+            res.send({original_url: res.locals.original, short_url: shortVal})
+        });
+    })
 })
 
 
-//Gets the url and call cb
-function getURL(req,res,cb){
+//Handles redirection to the url that is in the database
+app.get("/api/shorturl/:short_url?", (req,res)=>{
     let urlString = ""
     let sql = "SELECT * FROM urls WHERE short=?";
     con.query(sql, [req.params.short_url], (err, result, fields)=>{
@@ -80,17 +77,7 @@ function getURL(req,res,cb){
             let resultObj = Object.assign({}, result[0]);
             urlString = resultObj.original;
         }
-        cb(urlString);
-    })
-}
-
-//Handles redirection using callback function above
-app.get("/api/shorturl/:short_url?", (req,res)=>{
-    con.connect((err)=>{
-        if(err) throw err;
-        getURL(req,res,(urlString)=>{
-            res.redirect(urlString);
-        })
+        res.redirect(urlString);
     })
 })
 
