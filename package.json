@@ -1,0 +1,14 @@
+{
+    "name": "url-shortener-api",
+    "description": "Provides the shorter version of given url",
+    "version": "0.0.1",
+    "author": "Yuto Omachi",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "express": "^4.14.0",
+        "mysql": "^2.18.1"
+    }
+}
