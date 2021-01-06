@@ -7,7 +7,7 @@ const app = express();
 const con = mysql.createConnection({
     host: "localhost",
     user: "root", 
-    password: "youoma0711",
+    password: "yourpassword@root",
     database: "url_shortener_db"
   });
 
@@ -88,6 +88,16 @@ app.get("/api/shorturl/:short_url?", (req,res)=>{
             urlString = resultObj.original;
         }
         res.redirect(urlString);
+    })
+})
+
+
+app.get("/api/fulllist", (req,res)=>{
+    let sql = "SELECT * FROM urls";
+    let list = [];
+    con.query(sql, [req.params.short_url], (err, result, fields)=>{
+        if(err) throw err;
+        res.send(result); 
     })
 })
 
