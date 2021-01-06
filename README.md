@@ -20,3 +20,5 @@ This project is built for my practice for building simple api.
 5. Excute "node table-initializer" on terminal to initialize the table.
 6. Excute "node app" on terminal and open "http://[hostname]:[port]" on your prefered browser. (default is http://127.0.0.1:3000/)
 7. Now you can simply follow the intruction on the page. Enjoy!
+
+(Some of the front end work is borrowed from [freecodecamp](https://www.freecodecamp.org))
