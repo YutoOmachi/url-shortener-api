@@ -3,18 +3,14 @@ const mysql = require('mysql');
 const dns = require('dns');
 const { Console } = require('console');
 
-// const db_init = require('./db-initializer');
-// db_init.createDatabase();
-
 const app = express();
 const con = mysql.createConnection({
     host: "localhost",
-    user: "root",
+    user: "root", 
     password: "youoma0711",
     database: "url_shortener_db"
   });
 
-// db_init.createTable(con);
 
 const hostname = '127.0.0.1';;
 const port = 3000;
@@ -41,9 +37,8 @@ function getShortURL(req,res,cb){
     });
 }
 
-//When new URL is posted
-app.post('/api/shorturl/new', (req,res, next)=>{
-    //Evaluates if the given string is valid
+//Evaluates if the given string is valid url
+function verifyURL(req,res, next){
     let host = "";
     res.locals.original = req.body.url;
     try{    
@@ -57,18 +52,28 @@ app.post('/api/shorturl/new', (req,res, next)=>{
     dns.lookup(host, (err,adresses)=>{
         if (err) {
             res.send({error: "Invalid URL"});
-            return;
+        }
+        else{
+            next();
         }
     })
-    next();
-}, (req,res)=>{
-    getShortURL(req,res,(shortVal)=>{
-        sql = "INSERT INTO urls (original, short) VALUES (? , ?)"
-        con.query(sql, [res.locals.original, shortVal], function (err, result) {
-            if (err) throw err;
-            res.send({original_url: res.locals.original, short_url: shortVal})
-        });
-    })
+}
+
+//When new URL is posted
+app.post('/api/shorturl/new', 
+    (req,res,next)=>{
+        verifyURL(req,res,next);
+    },
+    (req,res)=>{
+        getShortURL(req,res,(shortVal)=>{
+            sql = "INSERT INTO urls (original, short) VALUES (? , ?)"
+            con.query(sql, [res.locals.original, shortVal], function (err, result) {
+                if (err) throw err;
+                console.log("URL saved to database successfully")
+                res.send({original_url: res.locals.original, short_url: shortVal});
+                return;
+            });
+        })
 })
 
 
