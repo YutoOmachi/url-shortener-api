@@ -13,7 +13,7 @@ const con = mysql.createConnection({
 
 
 const hostname = '127.0.0.1';;
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(express.static('public'));
 app.use(express.urlencoded({
@@ -27,12 +27,12 @@ app.get('/', (req,res)=> {
 
 //CallBack get url short version
 function getShortURL(req,res,cb){
-    let shortVal;
     let sql = "SELECT MAX(short) FROM urls";
     con.query(sql, function (err, result, fields) {
         if (err) throw err;
         let resutlObj = Object.assign({}, result[0]);
-        shortVal = resutlObj['MAX(short)']+1;    
+        let shortVal = 1;
+        if(resutlObj['MAX(short)']) shortVal = resutlObj['MAX(short)']+1;    
         cb(shortVal)
     });
 }
