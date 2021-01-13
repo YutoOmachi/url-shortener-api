@@ -4,7 +4,7 @@
 As the name describes you can shorten urls using this project. <br>
 This project is built for my practice for building simple api.
 
-## Tech Stacks
+## Tech Stack
 * node.js
 * express
 * mysql
